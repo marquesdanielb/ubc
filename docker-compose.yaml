@@ -50,11 +50,14 @@ services:
       - AIRFLOW_ADMIN_USER=${AIRFLOW_ADMIN_USER}
       - AIRFLOW_ADMIN_PASSWORD=${AIRFLOW_ADMIN_PASSWORD}
       - AIRFLOW_ADMIN_EMAIL=${AIRFLOW_ADMIN_EMAIL}
+      - PYTHONPATH=/opt/airflow
     volumes:
       - ./dags:/opt/airflow/dags
       - ./logs:/opt/airflow/logs
       - ./plugins:/opt/airflow/plugins
       - .:/opt/airflow/data
+      - ./scripts:/opt/airflow/scripts
+      - ./tests:/opt/airflow/tests
     ports:
       - "8080:8080"
     command: bash -c "airflow db init && airflow users create --username \"$$AIRFLOW_ADMIN_USER\" --password \"$$AIRFLOW_ADMIN_PASSWORD\" --firstname Admin --lastname User --role Admin --email \"$$AIRFLOW_ADMIN_EMAIL\" && airflow webserver"
@@ -77,11 +80,14 @@ services:
       - AIRFLOW__CORE__EXECUTOR=CeleryExecutor
       - AIRFLOW__CORE__FERNET_KEY=${AIRFLOW__CORE__FERNET_KEY}
       - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - PYTHONPATH=/opt/airflow
     volumes:
       - ./dags:/opt/airflow/dags
       - ./logs:/opt/airflow/logs
       - ./plugins:/opt/airflow/plugins
       - .:/opt/airflow/data
+      - ./scripts:/opt/airflow/scripts
+      - ./tests:/opt/airflow/tests
     command: scheduler
 
   airflow-worker:
@@ -101,11 +107,14 @@ services:
       - AIRFLOW__CELERY__RESULT_BACKEND=${AIRFLOW__CELERY__RESULT_BACKEND}
       - AIRFLOW__CORE__EXECUTOR=CeleryExecutor
       - AIRFLOW__CORE__FERNET_KEY=${AIRFLOW__CORE__FERNET_KEY}
+      - PYTHONPATH=/opt/airflow
     volumes:
       - ./dags:/opt/airflow/dags
       - ./logs:/opt/airflow/logs
       - ./plugins:/opt/airflow/plugins
       - .:/opt/airflow/data
+      - ./scripts:/opt/airflow/scripts
+      - ./tests:/opt/airflow/tests
     command: celery worker
 
 networks:

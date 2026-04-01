@@ -36,24 +36,19 @@ Para garantir um ambiente de nível de produção e facilitar a avaliação, as 
     git clone [SEU_LINK_DO_GITHUB_AQUI]
     cd [NOME_DA_PASTA]
   ```
-2. Setup Automático (Recomendado):
+2. **Setup Automático (Recomendado):**
   Execute o comando abaixo. Ele criará as pastas necessárias, ajustará permissões (se estiver no Linux), criará o arquivo .env baseado no template e subirá os containers.
   ``` bash
     make install
   ```
   (Caso não use o Make, copie o .env.example para .env, preencha as variáveis e rode docker compose up -d --build).
 
-3. Acessando os Serviços:
+3. **Acessando os Serviços:**
+  - Airflow: http://localhost:8080 (Credenciais padrão definidas no .env: admin / admin)
+  - Solr: http://localhost:8983/solr/#/~cores/alunos
 
-  Airflow: http://localhost:8080 (Credenciais padrão definidas no .env: admin / admin)
-  Solr: http://localhost:8983/solr/#/~cores/alunos
-
-Executando o Pipeline:
-
-Acesse o painel do Airflow.
-
-Ative a DAG ubc_solr_import_pipeline.
-
-Clique em Trigger DAG (botão Play).
-
-Acompanhe os logs nas tasks para verificar a limpeza e a indexação.
+4. **Executando o Pipeline:**
+  - Acesse o painel do Airflow.
+  - Ative a DAG ubc_solr_import_pipeline.
+  - Clique em Trigger DAG (botão Play).
+  - Acompanhe os logs nas tasks para verificar a limpeza e a indexação.

@@ -1,6 +1,6 @@
 DOCKER_COMPOSE = docker compose
 
-.PHONY: setup up down restart build clean help
+.PHONY: setup up down restart build clean help test
 
 help:
 	@echo "Comandos disponíveis:"
@@ -10,6 +10,7 @@ help:
 	@echo "  make down     - Para e remove os containers e redes"
 	@echo "  make restart  - Reinicia os containers"
 	@echo "  make clean    - Remove volumes (CUIDADO: apaga os dados do banco e Solr)"
+	@echo "  make test     - Testa a sanitização de colunas"
 
 setup:
 	@echo "🔧 Resetando e configurando permissões..."
@@ -37,4 +38,7 @@ restart:
 	@echo "🔄 Reiniciando o ambiente Docker..."
 	$(DOCKER_COMPOSE) restart
 
+test:
+	@echo "🧪 Rodando testes automatizados (Pytest)..."
+	$(DOCKER_COMPOSE) exec airflow-webserver pytest tests/ -v
 install: setup build
