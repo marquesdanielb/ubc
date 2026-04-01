@@ -1,7 +1,8 @@
-version: '3.8'
 services:
   postgres:
     image: postgres:13
+    networks:
+      - ubc_network
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -11,14 +12,19 @@ services:
 
   redis:
     image: redis:latest
+    networks:
+      - ubc_network
 
   solr:
     image: solr:8-slim
     container_name: solr_instance
+    networks:
+      - ubc_network
     ports:
       - "8983:8983"
     volumes:
       - solr_data:/var/solr
+    command: solr-precreate alunos
 
   airflow:
     build: 
@@ -28,6 +34,8 @@ services:
       - postgres
       - redis
       - solr
+    networks:
+      - ubc_network
     environment:
       - AIRFLOW__CORE__EXECUTOR=CeleryExecutor
       - AIRFLOW__CORE__SQL_ALCHEMY_CONN=${AIRFLOW__CORE__SQL_ALCHEMY_CONN}
@@ -58,6 +66,10 @@ services:
       airflow scheduler &
       airflow webserver
       "
+
+networks:
+  ubc_network:
+    driver: bridge
 
 volumes:
   postgres_data:
