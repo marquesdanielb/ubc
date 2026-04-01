@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+
+# Airflow / Docker
+logs/
+plugins/
+postgres_data/
+solr_data/
+.env
+
+data/*.csv
+data/*.parquet
+data/*.json
