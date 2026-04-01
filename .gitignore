@@ -15,3 +15,5 @@ solr_data/
 data/*.csv
 data/*.parquet
 data/*.json
+
+.notas.md
