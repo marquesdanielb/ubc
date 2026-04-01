@@ -14,14 +14,15 @@ Este repositório contém a solução para o desafio técnico de Engenharia de D
 
 Para garantir um ambiente de nível de produção e facilitar a avaliação, as seguintes decisões arquiteturais foram tomadas:
 
-1.  **Isolamento de Serviços (Airflow):** Em vez de rodar todos os componentes do Airflow em um único container, a arquitetura foi desmembrada em `webserver`, `scheduler` e `worker`. Isso garante maior estabilidade, escalabilidade e facilita o isolamento de logs.
-2.  **Rede Dedicada Docker:** Foi criada a rede `ubc_network` (`bridge`) para evitar conflitos de IP e portas com ambientes locais preexistentes do avaliador.
-3.  **Segurança e Credenciais:** Senhas e chaves de conexão foram totalmente removidas do `docker-compose.yaml`. Foi implementado um sistema baseado em `.env` (com template `.env.example` fornecido) para injeção segura de credenciais.
-4.  **Automação com Makefile:** O setup inicial (incluindo tratamento de UIDs e permissões de pastas no Linux) foi abstraído no comando `make install`, garantindo uma "Developer Experience" (DX) sem atritos.
-5.  **Criação Automática do Core (Solr):** O core `alunos` é inicializado automaticamente no boot do container via comando `solr-precreate`, garantindo idempotência.
-6.  **Pipeline (DAG):**
+1. **Isolamento de Serviços (Airflow):** Em vez de rodar todos os componentes do Airflow em um único container, a arquitetura foi desmembrada em `webserver`, `scheduler` e `worker`. Isso garante maior estabilidade, escalabilidade e facilita o isolamento de logs.
+2. **Rede Dedicada Docker:** Foi criada a rede `ubc_network` (`bridge`) para evitar conflitos de IP e portas com ambientes locais preexistentes do avaliador.
+3. **Segurança e Credenciais:** Senhas e chaves de conexão foram totalmente removidas do `docker-compose.yaml`. Foi implementado um sistema baseado em `.env` (com template `.env.example` fornecido) para injeção segura de credenciais.
+4. **Automação com Makefile:** O setup inicial (incluindo tratamento de UIDs e permissões de pastas no Linux) foi abstraído no comando `make install`, garantindo uma "Developer Experience" (DX) sem atritos.
+5. **Criação Automática do Core (Solr):** O core `alunos` é inicializado automaticamente no boot do container via comando `solr-precreate`, garantindo idempotência.
+6. **Pipeline (DAG):**
     * **Task 1 (Limpeza):** Utiliza `pandas` para padronizar nomes, tratar nulos (ex: preenchimento condicional de strings vazias e conversão segura de idades para inteiros) e converter o CSV em dicionários Python.
     * **Task 2 (Carga):** Os dados são passados em memória via `XCom` para a task de carga, que utiliza `pysolr` para realizar um *bulk insert* eficiente no Solr.
+7. **Resiliência a Mudanças de Schema (Data Contracts):** Durante o desenvolvimento, notei uma divergência entre a documentação do desafio (que mencionava a coluna **turma**) e o dataset fornecido **(onde a coluna estava ausente)**. Para refletir cenários reais onde os esquemas de dados mudam sem aviso prévio, a lógica do Pandas foi construída de forma dinâmica. O pipeline verifica a existência das colunas antes de aplicar transformações, garantindo que o ETL não falhe abruptamente caso atributos sejam adicionados ou removidos.
 
 ## 🛠️ Como Configurar e Executar
 
@@ -33,8 +34,8 @@ Para garantir um ambiente de nível de produção e facilitar a avaliação, as 
 
 1. **Clone o repositório:**
   ```bash
-    git clone [SEU_LINK_DO_GITHUB_AQUI]
-    cd [NOME_DA_PASTA]
+    git clone https://github.com/marquesdanielb/ubc.git
+    cd ubc
   ```
 2. **Setup Automático (Recomendado):**
   Execute o comando abaixo. Ele criará as pastas necessárias, ajustará permissões (se estiver no Linux), criará o arquivo .env baseado no template e subirá os containers.
